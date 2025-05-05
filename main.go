@@ -60,5 +60,5 @@ func main() {
 
 		c.JSON(http.StatusOK, resume)
 	})
-	r.Run()
+	r.Run(":8080")
 }
