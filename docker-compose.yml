@@ -1,0 +1,24 @@
+version: "3.1"
+
+services:
+  apimyresume:
+    image: api-my-resume:1.0
+    build:
+      context: .
+      args:
+        - GO_ENV=${GO_ENV}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 100m
+        max-file: "3"
+        labels: "production_status"
+        env: "os"
+    restart: on-failure
+    environment:
+      - GO_ENV=${GO_ENV}
+
+networks:
+  default:
+    external:
+      name: modomeu_network
