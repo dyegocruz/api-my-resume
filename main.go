@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"time"
 
@@ -51,7 +50,6 @@ func main() {
 
 		resume, err := resume.GetByUsername(username)
 		if err != nil {
-			log.Println("Error getting resume:", err)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "Failed to get resume",
 			})
