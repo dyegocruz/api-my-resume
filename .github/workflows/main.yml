@@ -1,0 +1,30 @@
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  # push:
+  #   branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    types:
+      - closed
+name: 🚀 SSH Automated Deploy
+jobs:
+  ssh-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: connect and deploy docker
+      uses: appleboy/ssh-action@master
+      env:
+        GO_ENV: "production"
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        envs: GO_ENV
+        script: |
+          export GO_ENV=$GO_ENV
+          cd docker/api-my-resume
+          git checkout main
+          git pull
+          docker-compose up -d --build
