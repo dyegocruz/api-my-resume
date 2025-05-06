@@ -9,28 +9,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// func init() {
-// 	if config.IsProduction() {
-// 		gin.SetMode("release")
-// 	}
-// }
-
 func main() {
 
 	cfg := config.FromEnv()
-
-	// if config.IsProduction(cfg.App.Environment) {
-	// 	log.Println("========>Running in production mode")
-	// 	gin.SetMode("release")
-	// }
-
-	// container, err := services.NewServiceContainer(ctx, cfg)
-	// if err != nil {
-	// 	panic(fmt.Errorf("failed to create service container: %w", err))
-	// }
-	// defer container.Close()
-
-	// config.EnsureIndexes()
 
 	r := gin.Default()
 
@@ -49,27 +30,6 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
-
-	// r.GET("/resume", func(c *gin.Context) {
-	// 	username := c.Query("username")
-
-	// 	if username == "" {
-	// 		c.JSON(http.StatusBadRequest, gin.H{
-	// 			"error": "Username is required",
-	// 		})
-	// 		return
-	// 	}
-
-	// 	resume, err := resume.GetByUsername(username)
-	// 	if err != nil {
-	// 		c.JSON(http.StatusBadRequest, gin.H{
-	// 			"error": "Failed to get resume",
-	// 		})
-	// 		return
-	// 	}
-
-	// 	c.JSON(http.StatusOK, resume)
-	// })
 
 	routes.Setup(r, cfg)
 
