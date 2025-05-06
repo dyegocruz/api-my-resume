@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"time"
 
 	"dyegocruz.com.br/api-my-resume/internal/config"
@@ -11,8 +12,10 @@ import (
 
 func main() {
 
-	cfg := config.FromEnv()
-
+	cfg, err := config.FromEnv()
+	if err != nil {
+		log.Fatalf("Error loading configuration: %v", err)
+	}
 	r := gin.Default()
 
 	AllowOrigins := []string{"https://dyegocruz.com.br"}

@@ -1,36 +1,22 @@
 package config
 
 import (
-	"github.com/caarlos0/env/v6"
+	"fmt"
+	"log"
+
+	"github.com/caarlos0/env/v11"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
-// type MongoEnv struct {
-// 	MongoURI string `json:"mongo_uri"`
-// 	Database string `json:"db_name"`
-// }
-
-// func getEnv(key string) string {
-// 	err := godotenv.Load()
-// 	if err != nil {
-// 		log.Fatal("Error loading .env file")
-// 	}
-// 	return os.Getenv(key)
-// }
-
-func IsProduction(env string) bool {
-	return env == "production"
+func IsProduction(environment string) bool {
+	return environment == "production"
 }
-
-// func GetMongoEnv() MongoEnv {
-// 	return MongoEnv{
-// 		MongoURI: getEnv("MONGO_URI"),
-// 		Database: getEnv("MONGO_DB_NAME"),
-// 	}
-// }
 
 type Config struct {
 	App struct {
 		Environment string `env:"GO_ENV" envDefault:"development"`
+		GinMode     string `env:"GIN_MODE" envDefault:"debug"`
 	}
 	MongoDB struct {
 		MongoURI string `env:"MONGO_URI"     envDefault:"mongodb://localhost:27017/"`
@@ -38,15 +24,21 @@ type Config struct {
 	}
 }
 
-func FromEnv() *Config {
+func FromEnv() (*Config, error) {
+	err := godotenv.Load()
+	if err != nil {
+		log.Printf("Warning: Couldn't load .env file: %v", err)
+	}
+
 	var c Config
 
-	if err := env.Parse(&c.App); err != nil {
-		panic(err)
-	}
-	if err := env.Parse(&c.MongoDB); err != nil {
-		panic(err)
+	err = env.Parse(&c)
+	if err != nil {
+		log.Println("Error parsing environment variables:", err)
+		return nil, fmt.Errorf("failed to parse environment variables: %w", err)
 	}
 
-	return &c
+	gin.SetMode(c.App.GinMode)
+
+	return &c, nil
 }
