@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"errors"
 	"log"
 	"time"
 
@@ -34,24 +35,28 @@ func ConnectMongo(cfg *Config) (*mongo.Client, error) {
 	return client, nil
 }
 
-// Client instance
-// var MongoClient *mongo.Client = ConnectMongo()
-
-// // getting database collection by name
-// func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
-// 	collection := client.Database(GetMongoEnv().Database).Collection(collectionName)
-// 	return collection
-// }
-
 func EnsureIndexes(mongoClient *mongo.Client, cfg *Config) {
 	collection := mongoClient.Database(cfg.MongoDB.Database).Collection("resume")
 	indexModel := mongo.IndexModel{
 		Keys:    bson.D{{Key: "username", Value: 1}},
 		Options: options.Index().SetUnique(true),
 	}
+
 	_, err := collection.Indexes().CreateOne(context.Background(), indexModel)
-	if err != nil {
-		log.Fatalf("Failed to create index: %v", err)
+
+	if isIndexConflictError(err) {
+		log.Println("Indexes already exist, skipping creation")
+	} else {
+		log.Println("Index created successfully")
 	}
-	log.Println("Index created successfully")
+}
+
+func isIndexConflictError(err error) bool {
+	var cmdErr mongo.CommandError
+	if errors.As(err, &cmdErr) {
+		return cmdErr.Code == 85 || // IndexKeySpecsConflict
+			cmdErr.Code == 86 || // IndexOptionsConflict
+			cmdErr.Message == "index already exists"
+	}
+	return false
 }
