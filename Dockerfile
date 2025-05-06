@@ -7,7 +7,7 @@ RUN mkdir -p /go/src/
 WORKDIR /go/src/$PACKAGE_PATH
 COPY . /go/src/$PACKAGE_PATH/
 RUN go mod download
-RUN go build -o api-my-resume
+RUN go build -o api-my-resume cmd/main.go
 
 ARG GO_ENV
 ENV GO_ENV=$GO_ENV
