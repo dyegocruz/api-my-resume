@@ -4,7 +4,6 @@ go 1.24.2
 
 require (
 	github.com/gin-gonic/gin v1.10.0
-	github.com/gofrs/uuid/v5 v5.3.2
 	github.com/kr/text v0.2.0 // indirect
 	go.mongodb.org/mongo-driver v1.17.3
 )
