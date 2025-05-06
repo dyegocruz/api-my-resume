@@ -10,39 +10,41 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func ConnectMongo() *mongo.Client {
+func ConnectMongo(cfg *Config) (*mongo.Client, error) {
 
 	ctx := context.Background()
 	client, err := mongo.Connect(ctx, options.Client().
-		ApplyURI(GetMongoEnv().MongoURI).
+		ApplyURI(cfg.MongoDB.MongoURI).
 		SetMaxPoolSize(100). // Default is 100
 		SetMinPoolSize(10).  // Default is 0
 		SetMaxConnIdleTime(30*time.Minute))
 
 	if err != nil {
 		log.Fatal(err)
+		return nil, err
 	}
 
 	err = client.Ping(ctx, nil)
 	if err != nil {
 		log.Fatal(err)
+		return nil, err
 	}
 
 	log.Println("Connected to MongoDB")
-	return client
+	return client, nil
 }
 
 // Client instance
-var MongoClient *mongo.Client = ConnectMongo()
+// var MongoClient *mongo.Client = ConnectMongo()
 
-// getting database collection by name
-func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
-	collection := client.Database(GetMongoEnv().Database).Collection(collectionName)
-	return collection
-}
+// // getting database collection by name
+// func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
+// 	collection := client.Database(GetMongoEnv().Database).Collection(collectionName)
+// 	return collection
+// }
 
-func EnsureIndexes() {
-	collection := GetCollection(MongoClient, "resume")
+func EnsureIndexes(mongoClient *mongo.Client, cfg *Config) {
+	collection := mongoClient.Database(cfg.MongoDB.Database).Collection("resume")
 	indexModel := mongo.IndexModel{
 		Keys:    bson.D{{Key: "username", Value: 1}},
 		Options: options.Index().SetUnique(true),

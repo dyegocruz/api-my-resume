@@ -1,4 +1,4 @@
-package resume
+package models
 
 type Position struct {
 	Company   string   `json:"company" bson:"company"`

@@ -5,12 +5,14 @@ go 1.24.2
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/gofrs/uuid/v5 v5.3.2
-	github.com/joho/godotenv v1.5.1
 	github.com/kr/text v0.2.0 // indirect
 	go.mongodb.org/mongo-driver v1.17.3
 )
 
-require github.com/gin-contrib/cors v1.7.5
+require (
+	github.com/caarlos0/env/v6 v6.10.1
+	github.com/gin-contrib/cors v1.7.5
+)
 
 require (
 	github.com/bytedance/sonic v1.13.2 // indirect
