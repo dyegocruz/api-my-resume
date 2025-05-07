@@ -10,7 +10,7 @@ import (
 
 func Setup(router *gin.Engine, cfg *config.Config) {
 
-	db, err := config.ConnectMongo(cfg) //mongo.Connect(context.Background(), options.Client().ApplyURI(cfg.MongoDB.MongoURI))
+	db, err := config.ConnectMongo(cfg)
 	if err != nil {
 		panic("failed to connect database")
 	}
