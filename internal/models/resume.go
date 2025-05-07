@@ -11,7 +11,7 @@ type Position struct {
 }
 
 type Education struct {
-	CourseName  string `json:"course_name" bson:"course_name"`
+	CourseName  string `json:"courseName" bson:"course_name"`
 	Degree      string `json:"degree" bson:"degree"`
 	FromYear    string `json:"fromYear" bson:"from_year"`
 	Institution string `json:"institution" bson:"institution"`
